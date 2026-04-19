@@ -16,6 +16,7 @@ return new class extends Migration
             $table->ForeignId('user_id')->constrained()->onDelete('cascade');
             $table->ForeignId('book_id')->constrained()->onDelete('cascade');
             $table->date('reservation_date');
+            $table->date("return_date");
             $table->enum('status', ['active', 'completed', 'cancelled'])->default('active');
             $table->timestamps();
         });

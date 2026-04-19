@@ -3,30 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Book_Record;
+use App\Models\BorrowRecord;
 use Illuminate\Support\Facades\Validator;
-class Book_RecordController extends Controller
+class BorrowRecordController extends Controller
 {
     public function index(){
         return response()->json([
             "ok" => true,
-            "message" => "Book Records retrieved successfully",
-            "data" => Book_Record::with('user', 'book')->get()->paginate(10)
+            "message" => "Borrowed Records retrieved successfully",
+            "data" => BorrowRecord::with('user', 'book')->get()
         ], 200);
     }
 
     public function show ($id){
-        $book_record = Book_Record::with('user', 'book')->findOrFail($id);
-        if(!$book_record){
+        $borrow_record = BorrowRecord::with('user', 'book')->find($id);
+        if(!$borrow_record){
             return response()->json([
                 "ok" => false,
-                "message" => "Book Record not found"
+                "message" => "Borrow Record not found"
             ], 404);
         }
         return response()->json([
             "ok" => true,
-            "message" => "Book Record retrieved successfully",
-            "data" => $book_record
+            "message" => "Borrow Record retrieved successfully",
+            "data" => $borrow_record
         ], 200);
     }
 
@@ -48,8 +48,8 @@ class Book_RecordController extends Controller
         }
 
         $validated = $validator->validated();
-        $book_record = Book_Record::create([
-            'user_id' => auth()->id(),
+        $book_record = BorrowRecord::create([
+            'user_id' => $validated ["user_id"],
             'book_id' => $validated['book_id'],
             'borrow_date' => $validated['borrow_date'],
             'return_date' => $validated['return_date'],
@@ -63,11 +63,11 @@ class Book_RecordController extends Controller
     }
 
     public function update (Request $request, $id){
-        $book_record = Book_Record::find($id);
-        if(!$book_record){
+        $borrow_record = BorrowRecord::find($id);
+        if(!$borrow_record){
             return response()->json([
                 "ok" => false,
-                "message" => "Book Record not found"
+                "message" => "Borrow Record not found"
             ], 404);
         }
 
@@ -88,32 +88,32 @@ class Book_RecordController extends Controller
         }
 
         $validated = $validator->validated();
-        $book_record->update([
+        $borrow_record->update([
             'user_id' => auth()->id(),
-            'book_id' => $validated['book_id'] ?? $book_record->book_id,
-            'borrow_date' => $validated['borrow_date'] ?? $book_record->borrow_date,
-            'return_date' => $validated['return_date'] ?? $book_record->return_date,
-            'status' => $validated['status'] ?? $book_record->status,
+            'book_id' => $validated['book_id'] ?? $borrow_record->book_id,
+            'borrow_date' => $validated['borrow_date'] ?? $borrow_record->borrow_date,
+            'return_date' => $validated['return_date'] ?? $borrow_record->return_date,
+            'status' => $validated['status'] ?? $borrow_record->status,
         ]);
         return response()->json([
             "ok" => true,
             "message" => "Book Record updated successfully",
-            "data" => $book_record
+            "data" => $borrow_record
         ], 200);
     }
 
     public function destroy ($id){
-        $book_record = Book_Record::find($id);
-        if(!$book_record){
+        $borrow_record = BorrowRecord::find($id);
+        if(!$borrow_record){
             return response()->json([
                 "ok" => false,
-                "message" => "Book Record not found"
+                "message" => "Borrow Record not found"
             ], 404);
         }
-        $book_record->delete();
+        $borrow_record->delete();
         return response()->json([
             "ok" => true,
-            "message" => "Book Record deleted successfully"
+            "message" => "Borrow Record deleted successfully"
         ], 200);
     }
 }

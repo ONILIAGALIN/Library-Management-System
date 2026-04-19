@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Fine;
-use App\Models\Borrow_record;
 use Illuminate\Support\Facades\Validator;
 class FineController extends Controller
 {
@@ -12,12 +11,12 @@ class FineController extends Controller
         return response()->json([
             "ok" => true,
             "message" => "Fines retrieved successfully",
-            "data" => Fine::with('borrow_record')->get()->paginate(10)
+            "data" => Fine::with('borrowRecord')->paginate(10)
         ], 200);
     }
 
     public function show ($id){
-        $fine = Fine::with('borrow_record')->findOrFail($id);
+        $fine = Fine::with('borrowRecord')->findOrFail($id);
         if(!$fine){
             return response()->json([
                 "ok" => false,
@@ -35,7 +34,7 @@ class FineController extends Controller
         $validator = Validator::make($request->all(), [
             'borrow_record_id' => 'required|exists:borrow_records,id',
             'amount' => 'required|numeric|min:0',
-            'status' => 'required|enum:unpaid,paid',
+            'status' => 'required|in:unpaid,paid',
             'payment_date' => 'nullable|date',
         ]);
 

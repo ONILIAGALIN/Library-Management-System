@@ -62,12 +62,12 @@ Route::prefix("reservations")->group(function () {
 });
 
 /********** Borrow Record Routes **********/
-Route::prefix("book-records")->group(function () {
-    Route::post("/", [App\Http\Controllers\Book_RecordController::class, "store"]);
-    Route::get("/", [App\Http\Controllers\Book_RecordController::class, "index"]);
-    Route::get("/{book_record}", [App\Http\Controllers\Book_RecordController::class, "show"]);
-    Route::patch("/{book_record}", [App\Http\Controllers\Book_RecordController::class, "update"]);
-    Route::delete("/{book_record}", [App\Http\Controllers\Book_RecordController::class, "destroy"]);
+Route::prefix("borrow-records")->group(function () {
+    Route::post("/", [App\Http\Controllers\BorrowRecordController::class, "store"]);
+    Route::get("/", [App\Http\Controllers\BorrowRecordController::class, "index"]);
+    Route::get("/{borrow_record}", [App\Http\Controllers\BorrowRecordController::class, "show"]);
+    Route::patch("/{borrow_record}", [App\Http\Controllers\BorrowRecordController::class, "update"]);
+    Route::delete("/{borrow_record}", [App\Http\Controllers\BorrowRecordController::class, "destroy"]);
 }); 
 
 /********** Fine Routes **********/

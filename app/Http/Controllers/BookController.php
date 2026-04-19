@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Validator;
 class BookController extends Controller
 {
     public function index(){
-        $books = Book::with('author', 'publisher', 'categories')->get();
+        $books = Book::with('author', 'publisher', 'categories')->paginate(10);
         return response()->json([
             "ok" => true,
-            "mesasage" => "Books retrieved successfully",
+            "message" => "Books retrieved successfully",
             "data" => $books
         ], 200);
     }
@@ -31,7 +31,7 @@ class BookController extends Controller
         ], 200);
     }
 
-    public function store (Request $request){
+    public function store(Request $request){
         $validator = Validator::make($request->all(), [
             'category_ids' => 'required|array',
             'category_ids.*' => 'exists:categories,id',
@@ -42,6 +42,7 @@ class BookController extends Controller
             'published_date' => 'required|date',
             'total_copies' => 'required|integer|min:0',
             'available_copies' => 'required|integer|min:0',
+            'image' => "required|mimes:jpeg,jpg,png|file|max:32000"
         ]);
 
         if ($validator->fails()) {
@@ -53,16 +54,24 @@ class BookController extends Controller
         }
 
         $validated = $validator->validated();
+        if(isset($validated['image'])){
+          $image = $request->file("image");
+        }
         $book = Book::create([
-            'author_id' => $validated['author_id'],
-            'publisher_id' => $validated['publisher_id'],
-            'title' => $validated['title'],
-            'isbn' => $validated['isbn'] ?? null,
-            'published_date' => $validated['published_date'],
-            'total_copies' => $validated['total_copies'],
-            'available_copies' => $validated['available_copies'],
+            "author_id" => $validated ["author_id"],
+            "publisher_id" => $validated["publisher_id"],
+            "title" => $validated ["title"],
+            "isbn" => $validated ["isbn"] ?? null,
+            "published_date" => $validated ["published_date"],
+            "total_copies" => $validated ["total_copies"],
+            "available_copies" => $validated ["available_copies"],
+            'extension' => isset($image) ? $image->getClientOriginalExtension() : null
         ]);
         $book->categories()->sync($validated['category_ids']);
+        if(isset($validated['image'])){
+          $image->move(public_path('storage/uploads/books'),  $book->id. '.' .  $image->getClientOriginalExtension());
+          // Storage::put('/uploads/books/' . $book->id. '.' .  $image->getClientOriginalExtension(), $image);
+        }
 
         return response()->json([
             "ok" => true,

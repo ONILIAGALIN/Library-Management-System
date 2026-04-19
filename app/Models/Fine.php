@@ -14,6 +14,6 @@ class Fine extends Model
 
     public function borrowRecord()
     {
-        return $this->belongsTo(Borrow_record::class);
+        return $this->belongsTo(BorrowRecord::class, 'borrow_record_id');
     }
 }

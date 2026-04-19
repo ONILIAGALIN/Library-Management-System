@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Borrow_record extends Model
+class BorrowRecord extends Model
 {
     protected $fillable = [
         'user_id',
@@ -26,6 +26,6 @@ class Borrow_record extends Model
 
     public function fine()
     {
-        return $this->hasOne(Fine::class);
+        return $this->hasOne(Fine::class, 'borrow_record_id');
     }
 }
